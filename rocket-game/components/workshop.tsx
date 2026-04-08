@@ -67,51 +67,55 @@ export function Workshop() {
             whileTap={{ scale: isUnlocked ? 0.98 : 1 }}
           >
             <Card
-              className={`touch-manipulation cursor-pointer transition-all border-2 ${
+              className={`touch-manipulation cursor-pointer transition-all border ${
                 isSelected
-                  ? "border-primary bg-primary/10"
+                  ? "border-primary bg-primary/10 shadow-lg shadow-primary/20"
                   : isUnlocked
-                  ? "border-border hover:border-primary/50"
-                  : "border-muted opacity-70"
-              }`}
+                  ? "border-white/10 bg-white/5 hover:border-primary/50"
+                  : "border-white/5 bg-black/20 opacity-80"
+              } backdrop-blur-sm`}
               onClick={() => isUnlocked && onSelect(type)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-card-foreground">{part.name}</h4>
+                      <h4 className="font-semibold text-white">{part.name}</h4>
                       {isSelected && (
-                        <Badge variant="default" className="text-xs">
+                        <Badge variant="default" className="text-xs bg-primary">
                           Equipped
                         </Badge>
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">
+                    <div className="text-xs text-white/60 mt-1">
                       {renderDetails(part)}
                     </div>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 mt-2 text-xs text-white/40">
                       <Weight className="h-3 w-3" />
                       <span>{part.weight} kg</span>
+                      {!isUnlocked && (
+                        <Badge variant="outline" className="text-[10px] ml-2 border-white/20 text-white/70">
+                          {part.xpRequired} XP
+                        </Badge>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     {isUnlocked ? (
-                      <Unlock className="h-5 w-5 text-accent" />
+                      <Unlock className="h-4 w-4 text-emerald-400" />
                     ) : (
-                      <>
-                        <Lock className="h-5 w-5 text-muted-foreground" />
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleUnlock(partType, part.id);
-                          }}
-                        >
-                          Unlock
-                        </Button>
-                      </>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 border border-white/10 hover:bg-white/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUnlock(partType, part.id);
+                        }}
+                      >
+                        <Lock className="h-3 w-3 mr-1" />
+                        Unlock
+                      </Button>
                     )}
                   </div>
                 </div>
