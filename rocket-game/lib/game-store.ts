@@ -119,33 +119,33 @@ export const MISSIONS: Mission[] = [
   {
     id: "m1", name: "Lunar Survey", destination: "Moon", difficulty: 1, distance: 500,
     environmentFactors: ["Low Gravity"], requiresRover: true, requiresHuman: false,
-    isComplexScience: false, xpReward: 100, completed: false, unlocked: true
+    isComplexScience: false, xpReward: 500, completed: false, unlocked: true
   },
   {
     id: "m2", name: "Moon Lab Setup", destination: "Moon", difficulty: 2, distance: 500,
     environmentFactors: ["Low Gravity"], requiresRover: false, requiresHuman: true,
-    isComplexScience: true, xpReward: 200, completed: false, unlocked: true
+    isComplexScience: true, xpReward: 1000, completed: false, unlocked: true
   },
   {
     id: "m3", name: "Mars Exploration", destination: "Mars", difficulty: 3, distance: 2000,
     environmentFactors: ["High Gravity", "Dust Storms"], requiresRover: true, requiresHuman: false,
-    isComplexScience: false, xpReward: 400, completed: false, unlocked: false
+    isComplexScience: false, xpReward: 2000, completed: false, unlocked: false
   },
   {
     id: "m4", name: "Mars Colony", destination: "Mars", difficulty: 4, distance: 2000,
     environmentFactors: ["High Gravity", "Dust Storms"], requiresRover: true, requiresHuman: true,
-    isComplexScience: true, xpReward: 800, completed: false, unlocked: false
+    isComplexScience: true, xpReward: 4000, completed: false, unlocked: false
   },
   {
     id: "m5", name: "Europa Ice Research", destination: "Europa", difficulty: 5, distance: 5000,
     environmentFactors: ["Extreme Cold", "Radiation"], requiresRover: true, requiresHuman: true,
-    isComplexScience: true, xpReward: 1500, completed: false, unlocked: false
+    isComplexScience: true, xpReward: 7500, completed: false, unlocked: false
   },
   {
     id: "m6", name: "Titan Expedition", destination: "Titan", difficulty: 6, distance: 8000,
     environmentFactors: ["Stormy Atmosphere", "Low Visibility", "Extreme Cold"],
     requiresRover: true, requiresHuman: true, isComplexScience: true,
-    xpReward: 2500, completed: false, unlocked: false
+    xpReward: 12500, completed: false, unlocked: false
   },
 ];
 
