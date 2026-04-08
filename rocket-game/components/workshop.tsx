@@ -46,7 +46,7 @@ export function Workshop() {
     unlockItem(type, id);
   };
 
-  const renderPartSelector = <T extends { id: string; name: string; weight: number; xpRequired: number }>(
+  const renderPartSelector = <T extends { id: string; name: string; weight: number; xpRequired: number },>(
     parts: T[],
     currentType: string,
     unlocked: string[],
