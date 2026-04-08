@@ -23,6 +23,8 @@ export interface RocketPart {
   weight: number;
   unlocked: boolean;
   xpRequired: number;
+  statBonus?: { type: "stability" | "thrust" | "efficiency"; value: number };
+  statPenalty?: { type: "weight" | "efficiency"; value: number };
 }
 
 export interface NoseCone extends RocketPart {
@@ -156,10 +158,27 @@ export function calculateRocketStats(config: RocketConfig) {
   const fuelTank = FUEL_TANKS.find(f => f.type === config.fuelTank)!;
   const thruster = THRUSTERS.find(t => t.type === config.thruster)!;
 
-  const totalWeight = noseCone.weight + cabin.weight + fuelTank.weight + thruster.weight;
-  const thrustToWeight = thruster.thrust / totalWeight;
-  const maxRange = fuelTank.range * (thruster.efficiency / 100);
-  const stability = (noseCone.stability + noseCone.aerodynamics) / 2;
+  const parts = [noseCone, cabin, fuelTank, thruster];
+  
+  let totalWeight = parts.reduce((sum, p) => sum + p.weight + (p.statPenalty?.type === "weight" ? p.statPenalty.value : 0), 0);
+  let baseThrust = thruster.thrust;
+  let baseEfficiency = thruster.efficiency;
+  let baseStability = (noseCone.stability + noseCone.aerodynamics) / 2;
+
+  parts.forEach(p => {
+    if (p.statBonus) {
+      if (p.statBonus.type === "stability") baseStability += p.statBonus.value;
+      if (p.statBonus.type === "thrust") baseThrust += p.statBonus.value;
+      if (p.statBonus.type === "efficiency") baseEfficiency += p.statBonus.value;
+    }
+    if (p.statPenalty) {
+      if (p.statPenalty.type === "efficiency") baseEfficiency -= p.statPenalty.value;
+    }
+  });
+
+  const thrustToWeight = baseThrust / totalWeight;
+  const maxRange = fuelTank.range * (baseEfficiency / 100);
+  const stability = Math.min(100, Math.max(0, baseStability));
 
   return {
     totalWeight,
