@@ -53,6 +53,9 @@ export function LaunchSimulation() {
     failureHint,
     failureReason,
     failedPhase,
+    activeEvent,
+    triggerEvent,
+    clearEvent,
     resetLaunch,
     restartMission,
     restartPhase,
@@ -62,6 +65,25 @@ export function LaunchSimulation() {
     completeMission,
     failMission,
   } = useGameStore();
+
+  useEffect(() => {
+    if (isLaunching && ["liftoff", "orbit", "transit", "landing"].includes(launchPhase)) {
+      if (Math.random() < 0.05) { 
+        triggerEvent(launchPhase);
+      }
+    }
+  }, [launchPhase, isLaunching, triggerEvent]);
+
+  useEffect(() => {
+    if (activeEvent) {
+      toast.warning("Mission Alert!", {
+        description: activeEvent.message,
+        action: { label: "Dismiss", onClick: () => clearEvent() },
+      });
+      setTimeout(clearEvent, 5000);
+    }
+  }, [activeEvent, clearEvent]);
+
 
   const stats = calculateRocketStats(rocketConfig);
   
@@ -1286,9 +1308,13 @@ export function LaunchSimulation() {
                       Amazing job! Your rocket landed safely on {selectedMission?.destination}!
                     </p>
                     <div className="bg-card rounded-lg p-4 mb-6">
-                      <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
+                      <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary mb-4">
                         <Sparkles className="h-6 w-6" />
                         +{selectedMission?.xpReward} XP
+                      </div>
+                      <div className="text-sm text-muted-foreground italic border-t pt-4">
+                        <span className="font-bold text-primary">Did you know?</span>
+                        <p>{AEROSPACE_FACTS[Math.floor(Math.random() * AEROSPACE_FACTS.length)]}</p>
                       </div>
                     </div>
                     <Button onClick={handleContinue} size="lg" className="w-full">
