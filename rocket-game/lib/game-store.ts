@@ -415,10 +415,10 @@ export const useGameStore = create<GameState>()((set, get) => ({
         thruster: "basic",
       },
 
-      unlockedNoseCones: NOSE_CONES.map((n) => n.type),
-      unlockedCabins: CABINS.map((c) => c.type),
-      unlockedFuelTanks: FUEL_TANKS.map((f) => f.type),
-      unlockedThrusters: THRUSTERS.map((t) => t.type),
+      unlockedNoseCones: ["standard"],
+      unlockedCabins: ["cargo"],
+      unlockedFuelTanks: ["small"],
+      unlockedThrusters: ["basic"],
 
       completedMissions: [],
       unlockedMissions: ["m1", "m2"],
@@ -643,7 +643,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
             break;
         }
 
-        if (!item) return false;
+        if (!item || state.xp < item.xpRequired) return false;
 
         const currentUnlocked = state[unlockedKey] as string[];
         if (currentUnlocked.includes(itemType)) return false;
