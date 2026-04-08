@@ -5,23 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Rocket, Play, X, Sparkles } from "lucide-react";
+import { useGameStore } from "@/lib/game-store";
 
 export function WelcomeModal() {
+  const { tutorialCompleted, setTutorialCompleted } = useGameStore();
   const [isOpen, setIsOpen] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Check if user has seen the tutorial
-    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-    if (!hasSeenTutorial) {
+    if (!tutorialCompleted) {
       setIsOpen(true);
     }
-  }, []);
+  }, [tutorialCompleted]);
 
   const handleSkip = () => {
-    localStorage.setItem("hasSeenTutorial", "true");
+    setTutorialCompleted(true);
     setIsOpen(false);
   };
 
@@ -30,12 +30,11 @@ export function WelcomeModal() {
   };
 
   const handleCloseVideo = () => {
-    localStorage.setItem("hasSeenTutorial", "true");
+    setTutorialCompleted(true);
     setIsOpen(false);
     setShowVideo(false);
   };
 
-  // Don't render anything on server or if modal shouldn't show
   if (!mounted || !isOpen) return null;
 
   return (
