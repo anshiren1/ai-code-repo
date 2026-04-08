@@ -151,7 +151,34 @@ export const MISSIONS: Mission[] = [
   },
 ];
 
-// Calculate rocket stats
+export const AEROSPACE_FACTS = [
+  "The Apollo 11 moon landing was watched by 600 million people worldwide.",
+  "Space is not actually that far away. It is just 100km (62 miles) up to reach the Kármán line.",
+  "There is no sound in space, as there is no atmosphere to carry sound waves.",
+  "The first satellite ever launched was Sputnik 1 in 1957 by the Soviet Union.",
+  "The Saturn V rocket that took humans to the Moon remains the most powerful rocket ever successfully flown.",
+];
+
+export interface RandomEvent {
+  message: string;
+  effect: "delay" | "none" | "failure";
+  hint: string;
+}
+
+export const RANDOM_EVENTS: Record<LaunchPhase, RandomEvent[]> = {
+  countdown: [{ message: "A stray cat walked onto the launchpad!", effect: "delay", hint: "Wait for it to leave..." }],
+  liftoff: [{ message: "A bird hit the nose cone!", effect: "none", hint: "It was just a scratch!" }],
+  orbit: [{ message: "Astronaut forgot the pizza delivery!", effect: "failure", hint: "Return to base immediately!" }],
+  transit: [{ message: "Aliens sent a message: 'You shall not pass!'", effect: "failure", hint: "They are very protective of their sector." }],
+  landing: [{ message: "Found a hidden space collectible!", effect: "none", hint: "Added to your collection!" }],
+  surface_mission: [],
+  result: [],
+};
+
+// Add to GameState interface:
+// activeEvent: RandomEvent | null;
+// triggerEvent: (phase: LaunchPhase) => void;
+// clearEvent: () => void;
 export function calculateRocketStats(config: RocketConfig) {
   const noseCone = NOSE_CONES.find(n => n.type === config.noseCone)!;
   const cabin = CABINS.find(c => c.type === config.cabin)!;
@@ -421,6 +448,10 @@ interface GameState {
   completeDailyChallenge: () => void;
   addToLeaderboard: (entry: LeaderboardEntry) => void;
   unlockItem: (type: "noseCone" | "cabin" | "fuelTank" | "thruster", id: string) => boolean;
+  // Random Event
+  activeEvent: RandomEvent | null;
+  triggerEvent: (phase: LaunchPhase) => void;
+  clearEvent: () => void;
 }
 
 export const useGameStore = create<GameState>()((set, get) => ({
@@ -431,6 +462,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
       level: 1,
       missionsCompleted: 0,
       tutorialCompleted: false,
+      activeEvent: null,
 
       rocketConfig: {
         noseCone: "standard",
@@ -676,4 +708,15 @@ export const useGameStore = create<GameState>()((set, get) => ({
         set({ [unlockedKey]: [...currentUnlocked, itemType] } as Partial<GameState>);
         return true;
       },
+      triggerEvent: (phase) => {
+        const events = RANDOM_EVENTS[phase];
+        if (events && events.length > 0) {
+          const event = events[Math.floor(Math.random() * events.length)];
+          set({ activeEvent: event });
+          if (event.effect === "failure") {
+            get().failMission(event.effect, event.message, event.hint);
+          }
+        }
+      },
+      clearEvent: () => set({ activeEvent: null }),
 }));
