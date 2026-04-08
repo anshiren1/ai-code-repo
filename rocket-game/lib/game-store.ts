@@ -407,9 +407,11 @@ interface GameState {
 export const useGameStore = create<GameState>()((set, get) => ({
       // Initial state
       playerName: "Space Cadet",
+      userId: `user_${Math.random().toString(36).substring(2, 9)}`,
       xp: 0,
       level: 1,
       missionsCompleted: 0,
+      tutorialCompleted: false,
 
       rocketConfig: {
         noseCone: "standard",
@@ -448,6 +450,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
 
       // Actions
       setPlayerName: (name) => set({ playerName: name }),
+      setTutorialCompleted: (completed) => set({ tutorialCompleted: completed }),
 
       setRocketConfig: (config) =>
         set((state) => ({
