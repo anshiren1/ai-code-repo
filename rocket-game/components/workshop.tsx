@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lock, Unlock, Rocket, Gauge, Fuel, Weight, Zap, Navigation, Box } from "lucide-react";
+import { toast } from "sonner";
 import { RocketVisual } from "./rocket-visual";
 import {
   useGameStore,
@@ -104,16 +105,27 @@ export function Workshop() {
                     {isUnlocked ? (
                       <Unlock className="h-4 w-4 text-emerald-400" />
                     ) : (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 border border-white/10 hover:bg-white/10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUnlock(partType, part.id);
-                        }}
-                      >
-                        <Lock className="h-3 w-3 mr-1" />
+                      import { toast } from "sonner";
+                      ...
+                                              <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                className="h-8 border border-white/10 hover:bg-white/10"
+                                                aria-label={`Unlock ${part.name}`}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  const success = handleUnlock(partType, part.id);
+                                                  if (!success) {
+                                                    toast.error("Insufficient XP", {
+                                                      description: `You need ${part.xpRequired} XP to unlock ${part.name}.`,
+                                                    });
+                                                  } else {
+                                                    toast.success("Part Unlocked!", {
+                                                      description: `${part.name} is now available in your workshop.`,
+                                                    });
+                                                  }
+                                                }}
+                                              >                        <Lock className="h-3 w-3 mr-1" />
                         Unlock
                       </Button>
                     )}

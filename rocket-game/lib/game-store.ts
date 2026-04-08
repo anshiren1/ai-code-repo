@@ -211,6 +211,9 @@ export function checkOrbit(config: RocketConfig, mission: Mission): PhaseCheckRe
 export function checkTransit(config: RocketConfig, mission: Mission): PhaseCheckResult {
   const stats = calculateRocketStats(config);
   
+  // Calculate transit duration: 1s per 1000km, minimum 4s
+  const requiredDuration = Math.max(4, mission.distance / 1000);
+  
   // Range must cover the mission distance
   if (stats.maxRange < mission.distance) {
     return {
@@ -220,7 +223,7 @@ export function checkTransit(config: RocketConfig, mission: Mission): PhaseCheck
       hint: `${mission.destination} is ${mission.distance.toLocaleString()} km away! We need a bigger fuel tank or a more efficient engine.`,
     };
   }
-  return { passed: true, failureReason: "none", message: "Transit complete!", hint: "" };
+  return { passed: true, failureReason: "none", message: `Transit complete in ${requiredDuration.toFixed(1)}s!`, hint: "" };
 }
 
 export function checkLanding(config: RocketConfig, mission: Mission): PhaseCheckResult {
